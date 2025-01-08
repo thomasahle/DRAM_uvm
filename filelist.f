@@ -1,11 +1,16 @@
-# Add the current directory to the include path
+
+# filelist.f example
+# (the timescale or macros you might include up top)
 +incdir+.
 
-# 1) Compile the packages first (they define classes & types):
-dram_pkg.sv
-dram_seq_pkg.sv
+# UVM packages from your tool
+# (the simulator typically does this automatically)
 
-# 2) Then compile the UVM components that reference those packages
+# Our local packages
+dram_pkg.sv         # defines dram_seq_item
+dram_seq_pkg.sv     # defines dram_base_seq
+
+# The rest of our code
 dram_drv.sv
 dram_mon.sv
 dram_cov.sv
@@ -14,8 +19,6 @@ dram_agent.sv
 dram_env.sv
 dram_test.sv
 
-# 3) Finally, compile your design and top testbench
 design.sv
 interface.sv
 testbench.sv
-

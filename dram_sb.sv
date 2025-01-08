@@ -8,10 +8,10 @@ import dram_pkg::*;
 class dram_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(dram_scoreboard)
 
-  // Keep a memory mirror
+  // Memory mirror
   bit [7:0] mem [0:63][0:31];
 
-  // Incoming transactions
+  // TLM FIFO for receiving items from the agent
   uvm_tlm_analysis_fifo #(dram_seq_item) analysis_fifo;
 
   function new(string name="dram_scoreboard", uvm_component parent);
@@ -21,11 +21,12 @@ class dram_scoreboard extends uvm_scoreboard;
 
   task run_phase(uvm_phase phase);
     dram_seq_item trans;
+
     forever begin
       analysis_fifo.get(trans);
 
-      case(trans.cmd)
-        ACT: ; // We do nothing special here in the scoreboard
+      case (trans.cmd)
+        ACT: ; // not checking anything special
         READ: begin
           if (trans.valid) begin
             if (mem[trans.row][trans.col] == trans.rd_data) begin
@@ -33,8 +34,7 @@ class dram_scoreboard extends uvm_scoreboard;
                 "READ MATCH row=%0d col=%0d data=0x%0h",
                 trans.row, trans.col, trans.rd_data),
                 UVM_LOW)
-            end
-            else begin
+            end else begin
               `uvm_error("SB", $sformatf(
                 "READ MISMATCH row=%0d col=%0d expected=0x%0h got=0x%0h",
                 trans.row, trans.col, mem[trans.row][trans.col], trans.rd_data))

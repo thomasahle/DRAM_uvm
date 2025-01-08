@@ -8,13 +8,12 @@ import dram_pkg::*;
 class dram_cov extends uvm_subscriber #(dram_seq_item);
   `uvm_component_utils(dram_cov)
 
-  // We need a local copy of the sequence item for coverage
+  // We'll store the item here, so the coverpoints can see it
   dram_seq_item item;
 
   // Reference to our virtual interface
   virtual dram_if vif;
 
-  // A covergroup inside our class
   covergroup cg @(posedge vif.clk);
     coverpoint item.cmd {
       bins act   = {ACT};
@@ -33,8 +32,9 @@ class dram_cov extends uvm_subscriber #(dram_seq_item);
       bins col_high = {[21:31]};
     }
     coverpoint item.wr_data {
-      bins small = {[0:63]};
-      bins big   = {[64:255]};
+      // rename 'small' -> 'small_v' if needed
+      bins small_v = {[0:63]};
+      bins big_v   = {[64:255]};
     }
     cross item.cmd, item.row;
   endgroup : cg
@@ -50,7 +50,7 @@ class dram_cov extends uvm_subscriber #(dram_seq_item);
     cg = new();
   endfunction
 
-  // This is where the monitor calls coverage sampling
+  // Called by monitor via uvm_subscriber
   virtual function void write(dram_seq_item t);
     item = t;
     cg.sample();
