@@ -1,6 +1,4 @@
 
-`timescale 1ns/1ps
-
 import uvm_pkg::*;
 import dram_pkg::*;
 import dram_seq_pkg::*;
