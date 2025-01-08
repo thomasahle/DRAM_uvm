@@ -1,0 +1,129 @@
+xrun(64): 24.03-s004: (c) Copyright 1995-2024 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	24.03-s004: Started on Jan 08, 2025 at 16:51:25 UTC
+xrun
+	-sv
+	-uvm
+	-f filelist.f
+		+incdir+.
+		dram_pkg.sv
+		dram_seq_pkg.sv
+		dram_drv.sv
+		dram_mon.sv
+		dram_cov.sv
+		dram_sb.sv
+		dram_agent.sv
+		dram_env.sv
+		dram_test.sv
+		design.sv
+		interface.sv
+		testbench.sv
+	-top dram_top
+Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /opt/cadence/installs/XCELIUM2403/tools/methodology/UVM/CDNS-1.1d
+file: dram_cov.sv
+      bins small = {[0:63]};
+               |
+xmvlog: *E,FNDKWD (dram_cov.sv,26|15): A "Verilog/SystemVerilog" keyword was found where an identifier was expected.
+  function new(string name="dram_cov", uvm_component parent);
+                                                   |
+xmvlog: *E,EXPRPA (dram_cov.sv,34|51): expecting a right parenthesis (')') [A.2.6(IEEE)].
+  function new(string name="dram_cov", uvm_component parent);
+                                                   |
+xmvlog: *E,NOIPRT (dram_cov.sv,34|51): Unrecognized declaration 'uvm_component' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+  function new(string name="dram_cov", uvm_component parent);
+                                                   |
+xmvlog: *E,NOTINF (dram_cov.sv,34|51): Interfaces are not allowed within tasks [SystemVerilog].
+  function new(string name="dram_cov", uvm_component parent);
+                                                          |
+xmvlog: *E,ILLPDL (dram_cov.sv,34|58): Mixing of ansi & non-ansi style port declaration is not legal.
+  function new(string name="dram_cov", uvm_component parent);
+                                                           |
+xmvlog: *E,EXPSMC (dram_cov.sv,34|59): expecting a semicolon (';') [12.3.2(IEEE)].
+    super.new(name, parent);
+        |
+xmvlog: *E,EXPRPA (dram_cov.sv,35|8): expecting a right parenthesis (')') [A.2.6(IEEE)].
+  function void build_phase(uvm_phase phase);
+                                    |
+xmvlog: *E,SVNOTY (dram_cov.sv,38|36): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  virtual function void write(dram_seq_item t);
+                                          |
+xmvlog: *E,SVNOTY (dram_cov.sv,45|42): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  function void report_phase(uvm_phase phase);
+                                     |
+xmvlog: *E,SVNOTY (dram_cov.sv,50|37): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+file: dram_sb.sv
+class dram_scoreboard extends uvm_scoreboard;
+                                           |
+xmvlog: *E,SVNOTY (dram_sb.sv,6|43): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  `uvm_component_utils(dram_scoreboard)
+                                      |
+xmvlog: *E,SVNOTY (dram_sb.sv,7|38): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  `uvm_component_utils(dram_scoreboard)
+                                      |
+xmvlog: *E,SVEXTK (dram_sb.sv,7|38): expecting a ';' (to terminate a type_declaration).
+  `uvm_component_utils(dram_scoreboard)
+                                      |
+xmvlog: *E,SVEXTK (dram_sb.sv,7|38): expecting a ';' (to terminate a type_declaration).
+  `uvm_component_utils(dram_scoreboard)
+                                      |
+xmvlog: *E,SVNOTY (dram_sb.sv,7|38): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  `uvm_component_utils(dram_scoreboard)
+                                      |
+xmvlog: *E,EXPSMC (dram_sb.sv,7|38): expecting a semicolon (';') [10.3.1(IEEE)].
+  `uvm_component_utils(dram_scoreboard)
+                                      |
+xmvlog: *E,SVNOTY (dram_sb.sv,7|38): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+  `uvm_component_utils(dram_scoreboard)
+                                      |
+xmvlog: *E,EXPSMC (dram_sb.sv,7|38): expecting a semicolon (';') [10.3.1(IEEE)].
+  uvm_tlm_analysis_fifo #(dram_seq_item) analysis_fifo;
+                      |
+xmvlog: *E,EXPENC (dram_sb.sv,13|22): Expecting the keyword 'endclass'.
+  function new(string name="dram_scoreboard", uvm_component parent);
+             |
+xmvlog: *E,NEWOIC (dram_sb.sv,15|13): The class constructor method 'new' is only allowed within a class declaration.
+  function new(string name="dram_scoreboard", uvm_component parent);
+                                                          |
+xmvlog: *E,EXPRPA (dram_sb.sv,15|58): expecting a right parenthesis (')') [A.2.6(IEEE)].
+  function new(string name="dram_scoreboard", uvm_component parent);
+                                                          |
+xmvlog: *E,NOIPRT (dram_sb.sv,15|58): Unrecognized declaration 'uvm_component' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+  function new(string name="dram_scoreboard", uvm_component parent);
+                                                          |
+xmvlog: *E,NOTINF (dram_sb.sv,15|58): Interfaces are not allowed within tasks [SystemVerilog].
+  function new(string name="dram_scoreboard", uvm_component parent);
+                                                                 |
+xmvlog: *E,ILLPDL (dram_sb.sv,15|65): Mixing of ansi & non-ansi style port declaration is not legal.
+  function new(string name="dram_scoreboard", uvm_component parent);
+                                                                  |
+xmvlog: *E,EXPSMC (dram_sb.sv,15|66): expecting a semicolon (';') [12.3.2(IEEE)].
+    super.new(name, parent);
+        |
+xmvlog: *E,EXPRPA (dram_sb.sv,16|8): expecting a right parenthesis (')') [A.2.6(IEEE)].
+  task run_phase(uvm_phase phase);
+                         |
+xmvlog: *E,SVNOTY (dram_sb.sv,20|25): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+    dram_seq_item trans;
+                |
+xmvlog: *E,NOIPRT (dram_sb.sv,21|16): Unrecognized declaration 'dram_seq_item' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+    dram_seq_item trans;
+                |
+xmvlog: *E,NOTINF (dram_sb.sv,21|16): Interfaces are not allowed within tasks [SystemVerilog].
+    dram_seq_item trans;
+                      |
+xmvlog: *E,ILLPDL (dram_sb.sv,21|22): Mixing of ansi & non-ansi style port declaration is not legal.
+    forever begin
+          |
+xmvlog: *E,EXPRPA (dram_sb.sv,22|10): expecting a right parenthesis (')') [A.2.6(IEEE)].
+  endtask
+        |
+xmvlog: *E,MISMUL (dram_sb.sv,47|8): Missing "begin" in [SystemVerilog] task/function.
+endclass
+       |
+xmvlog: *E,MPANDC (dram_sb.sv,48|7): expecting the keyword 'module', 'macromodule', 'primitive', 'connectmodule','connect', 'discipline' or 'nature' [A.1].
+file: testbench.sv
+	module worklib.dram_top:sv
+		errors: 0, warnings: 0
+	Total errors/warnings found outside modules and primitives:
+		errors: 33, warnings: 0
+xrun: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
+TOOL:	xrun(64)	24.03-s004: Exiting on Jan 08, 2025 at 16:51:26 UTC  (total: 00:00:01)

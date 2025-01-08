@@ -1,3 +1,4 @@
+
 module DRAM_model (
   input  logic        clk,
   input  logic        rst_n,
@@ -10,7 +11,6 @@ module DRAM_model (
 );
 
   // Very simple: single bank, 64 rows, each row has 32 columns of 8-bit data.
-  // Active row stored in row_buffer, or 'none' if not open.
   logic [7:0] mem [0:63][0:31];
   logic [5:0] active_row;
   logic       row_open;
@@ -31,28 +31,24 @@ module DRAM_model (
       valid_pipe <= 0;
 
       case(cmd)
-        2'b00: begin // ACT (Activate)
-          // open a new row
+        2'b00: begin // ACT
           active_row <= row;
           row_open   <= 1;
         end
         2'b01: begin // READ
           if(row_open && (active_row == row)) begin
-            read_pipe <= mem[row][col];
+            read_pipe  <= mem[row][col];
             valid_pipe <= 1;
           end
-          // else read invalid data
         end
         2'b10: begin // WRITE
           if(row_open && (active_row == row)) begin
             mem[row][col] <= wr_data;
           end
         end
-        2'b11: begin // PRE (Precharge)
-          // close the row
+        2'b11: begin // PRE
           row_open <= 0;
         end
-        default: ;
       endcase
     end
   end
@@ -61,10 +57,10 @@ module DRAM_model (
   always_ff @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
       rd_data <= '0;
-    end else begin
-      if(valid_pipe) begin
+    end
+    else begin
+      if(valid_pipe)
         rd_data <= read_pipe;
-      end
     end
   end
 

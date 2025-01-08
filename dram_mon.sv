@@ -1,3 +1,4 @@
+
 import uvm_pkg::*;
 import dram_pkg::*;
 `include "uvm_macros.svh"
@@ -16,14 +17,14 @@ class dram_monitor extends uvm_monitor;
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     if (!uvm_config_db#(virtual dram_if)::get(this, "", "vif", vif))
-      `uvm_fatal("MON", "No virtual interface provided to monitor")
+      `uvm_fatal("MON", "No virtual interface provided to monitor");
   endfunction
 
   task run_phase(uvm_phase phase);
     forever begin
       @(posedge vif.clk);
 
-      // We'll consider a "transaction" whenever cmd != 'bXX
+      // We'll consider a "transaction" whenever cmd != 2'bxx
       if (vif.cmd != 2'bxx) begin
         dram_seq_item trans = new("mon_trans");
         trans.cmd     = vif.cmd;
@@ -35,9 +36,10 @@ class dram_monitor extends uvm_monitor;
 
         item_collected_port.write(trans);
 
-        `uvm_info("MON", $sformatf("OBSERVED cmd=%0d row=%0d col=%0d wr_data=0x%0h valid=%0b rd_data=0x%0h",
-                    trans.cmd, trans.row, trans.col, trans.wr_data, trans.valid, trans.rd_data),
-                  UVM_LOW)
+        `uvm_info("MON", $sformatf(
+          "OBSERVED cmd=%0d row=%0d col=%0d wr_data=0x%0h valid=%0b rd_data=0x%0h",
+           trans.cmd, trans.row, trans.col, trans.wr_data, trans.valid, trans.rd_data
+        ), UVM_LOW)
       end
     end
   endtask

@@ -1,7 +1,9 @@
+
 package dram_pkg;
   import uvm_pkg::*;
   `include "uvm_macros.svh"
 
+  // DRAM commands
   typedef enum bit [1:0] {
     ACT   = 2'b00,
     READ  = 2'b01,
@@ -9,6 +11,7 @@ package dram_pkg;
     PRE   = 2'b11
   } dram_cmd_e;
 
+  // Sequence item
   class dram_seq_item extends uvm_sequence_item;
     `uvm_object_utils(dram_seq_item)
 
@@ -16,7 +19,7 @@ package dram_pkg;
     rand bit [5:0]  row;
     rand bit [4:0]  col;
     rand bit [7:0]  wr_data;
-    
+
     // For scoreboard checking
     bit [7:0] rd_data;
     bit       valid;

@@ -1,3 +1,6 @@
+
+// dram_cov.sv
+
 import uvm_pkg::*;
 import dram_pkg::*;
 `include "uvm_macros.svh"
@@ -5,6 +8,13 @@ import dram_pkg::*;
 class dram_cov extends uvm_subscriber #(dram_seq_item);
   `uvm_component_utils(dram_cov)
 
+  // We need a local copy of the sequence item for coverage
+  dram_seq_item item;
+
+  // Reference to our virtual interface
+  virtual dram_if vif;
+
+  // A covergroup inside our class
   covergroup cg @(posedge vif.clk);
     coverpoint item.cmd {
       bins act   = {ACT};
@@ -26,10 +36,8 @@ class dram_cov extends uvm_subscriber #(dram_seq_item);
       bins small = {[0:63]};
       bins big   = {[64:255]};
     }
-    cross cmd, row;
-  endgroup
-
-  virtual dram_if vif;
+    cross item.cmd, item.row;
+  endgroup : cg
 
   function new(string name="dram_cov", uvm_component parent);
     super.new(name, parent);
@@ -42,6 +50,7 @@ class dram_cov extends uvm_subscriber #(dram_seq_item);
     cg = new();
   endfunction
 
+  // This is where the monitor calls coverage sampling
   virtual function void write(dram_seq_item t);
     item = t;
     cg.sample();
@@ -49,6 +58,9 @@ class dram_cov extends uvm_subscriber #(dram_seq_item);
 
   function void report_phase(uvm_phase phase);
     super.report_phase(phase);
-    `uvm_info("COV", $sformatf("Overall coverage = %3.2f%%", cg.get_inst_coverage()), UVM_LOW);
+    `uvm_info("COV",
+      $sformatf("Overall coverage = %3.2f%%", cg.get_inst_coverage()),
+      UVM_LOW);
   endfunction
-endclass
+
+endclass : dram_cov
