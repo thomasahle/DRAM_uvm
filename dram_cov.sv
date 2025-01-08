@@ -53,7 +53,7 @@ class dram_cov extends uvm_subscriber #(dram_seq_item);
   // Called by monitor via uvm_subscriber
   virtual function void write(dram_seq_item t);
     item = t;
-    cg.sample();
+    // cg.sample();
   endfunction
 
   function void report_phase(uvm_phase phase);
