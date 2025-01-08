@@ -1,45 +1,41 @@
-class dram_drv extends uvm_driver #(dram_seq_item);
-`uvm_component_utils(dram_drv)
-virtual intif inf;
+import uvm_pkg::*;
+import dram_pkg::*;
+`include "uvm_macros.svh"
 
-function new(string name="dram_drv",uvm_component parent);
-super.new(name,parent);
-endfunction
+class dram_driver extends uvm_driver #(dram_seq_item);
+  `uvm_component_utils(dram_driver)
 
-virtual function void build_phase(uvm_phase phase);
-super.build_phase(phase);
-uvm_config_db #(virtual intif)::get(this,"","inf",inf);
-endfunction
+  // Reference to the interface
+  virtual dram_if vif;
 
- task run_phase(uvm_phase phase);
-dram_seq_item pkt;
-pkt=dram_seq_item::type_id::create("pkt");
-forever
-begin
-seq_item_port.get_next_item(pkt);
-pkt.en=1;
-@(negedge inf.clk);
-inf.en=pkt.en;
+  function new(string name="dram_driver", uvm_component parent);
+    super.new(name, parent);
+  endfunction
 
-  if(pkt.wr0==0 ) begin
-inf.wr0=pkt.wr0;
-inf.data0_in=pkt.data0_in;
-inf.add0=pkt.add0;
-`uvm_info("DRV TRANSACTIONS", $sformatf("inf.data0_in=%d,inf.add0=%d, inf.wr0=%b",inf.data0_in,inf.add0,inf.wr0) ,UVM_NONE);
-end
-else begin
-inf.wr1=pkt.wr1;
-inf.add1=pkt.add1;
-  inf.data1_in=pkt.data1_in;
-`uvm_info("DRV TRANSACTIONS", $sformatf("inf.add1=%d, inf.wr1=%b",inf.add1,inf.wr1) ,UVM_NONE);
-end
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (!uvm_config_db#(virtual dram_if)::get(this, "", "vif", vif))
+      `uvm_fatal("DRV", "No virtual interface provided to driver")
+  endfunction
 
-@(negedge inf.clk);
+  virtual task run_phase(uvm_phase phase);
+    dram_seq_item req;
 
-seq_item_port.item_done();
+    forever begin
+      seq_item_port.get_next_item(req);
 
-`uvm_info("DRV","DRV TRANSACTION TO DUT",UVM_NONE);
-#5;
-end
-endtask
+      @(posedge vif.clk);
+      vif.cmd     = req.cmd;
+      vif.row     = req.row;
+      vif.col     = req.col;
+      vif.wr_data = req.wr_data;
+
+      // for clarity: after driving
+      `uvm_info("DRV", $sformatf("SENT cmd=%0d row=%0d col=%0d wr_data=0x%0h", 
+                                 req.cmd, req.row, req.col, req.wr_data), UVM_LOW)
+
+      @(posedge vif.clk);
+      seq_item_port.item_done();
+    end
+  endtask
 endclass

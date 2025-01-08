@@ -1,9 +1,15 @@
+
+import uvm_pkg::*;
+import dram_pkg::*;
+import dram_seq_pkg::*;
+`include "uvm_macros.svh"
+
 class dram_test extends uvm_test;
   `uvm_component_utils(dram_test)
 
   dram_env env;
 
-  function new(string name, uvm_component parent);
+  function new(string name="dram_test", uvm_component parent);
     super.new(name, parent);
   endfunction
 
@@ -15,8 +21,6 @@ class dram_test extends uvm_test;
   task run_phase(uvm_phase phase);
     phase.raise_objection(this);
 
-    // Start a DRAM sequence
-    import dram_seq_pkg::*;
     dram_base_seq seq = new("base_seq");
     seq.start(env.agent.seqr);
 

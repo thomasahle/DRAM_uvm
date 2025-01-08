@@ -1,19 +1,8 @@
+
 `timescale 1ns/1ps
 import uvm_pkg::*;
 import dram_pkg::*;
 import dram_seq_pkg::*;
-
-`include "design.sv"
-`include "interface.sv"
-`include "dram_seq_item.sv"
-`include "dram_seq.sv"
-`include "dram_drv.sv"
-`include "dram_mon.sv"
-`include "dram_cov.sv"
-`include "dram_sb.sv"
-`include "dram_agent.sv"
-`include "dram_env.sv"
-`include "dram_test.sv"
 
 module dram_top();
   bit clk;
@@ -22,7 +11,7 @@ module dram_top();
   // Instantiate the interface
   dram_if dif(clk, rst_n);
 
-  // Instantiate the DRAM design
+  // Instantiate the DRAM model
   DRAM_model dut (
     .clk(dif.dut.clk),
     .rst_n(dif.dut.rst_n),
@@ -34,22 +23,23 @@ module dram_top();
     .valid(dif.dut.valid)
   );
 
-  // Clock & reset generation
+  // Clock
   initial begin
     clk = 0;
     forever #5 clk = ~clk;
   end
 
+  // Reset
   initial begin
     rst_n = 0;
     #20 rst_n = 1;
   end
 
+  // Run UVM
   initial begin
-    // Set up the virtual interface for UVM
+    // Provide the interface to the test via config_db
     uvm_config_db#(virtual dram_if)::set(uvm_root::get(), "*", "vif", dif);
 
-    // Run the test
     run_test("dram_test");
     #100 $finish;
   end
