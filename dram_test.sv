@@ -19,9 +19,9 @@ class dram_test extends uvm_test;
   endfunction
 
   task run_phase(uvm_phase phase);
-    phase.raise_objection(this);
+    dram_base_seq seq = new("base_seq");
 
-    dram_base_seq seq=new("base_seq");
+    phase.raise_objection(this);
     seq.start(env.agent.seqr);
 
     #100;
