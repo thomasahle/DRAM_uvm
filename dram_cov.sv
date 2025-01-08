@@ -1,56 +1,51 @@
-class dram_cov #(type T=dram_seq_item) extends uvm_subscriber #(T);
-`uvm_component_utils(dram_cov)
-//dram_seq_item pkt;
-T pkt;
+class dram_cov extends uvm_subscriber #(dram_seq_item);
+  `uvm_component_utils(dram_cov)
 
-covergroup CovPort;	//@(posedge intf.clk);
-  address0 : coverpoint pkt.add0 {
-    bins low    = {[0:42]};
-   // bins med    = {[21:42]};
-    bins high   = {[43:63]};
-  }
-  address1 : coverpoint pkt.add1 {
-    bins low   = {[0:42]};
-   // bins med    = {[21:42]};
-    bins high   = {[43:63]};
-  }
-  data0 : coverpoint  pkt.data0_in {
-    bins low    = {[0:150]};
-   // bins med    = {[51:150]};
-    bins high   = {[151:255]};
-  }
-  data1 : coverpoint  pkt.data1_in {
-    bins low    = {[0:150]};
-   // bins med    = {[51:150]};
-    bins high   = {[151:255]};
-  }
-  enable : coverpoint pkt.en;
-  write0 : coverpoint pkt.wr0;
-  write1 : coverpoint pkt.wr1;
-  crosss : cross write0,write1 { bins write = binsof(write0) intersect {0} && binsof(write1) intersect {0};
-                                bins read = binsof(write0) && binsof(write1);}
-endgroup
+  covergroup cg @(posedge vif.clk); // we’ll define vif below
+    coverpoint item.cmd {
+      bins act   = {ACT};
+      bins read  = {READ};
+      bins write = {WRITE};
+      bins pre   = {PRE};
+    }
+    coverpoint item.row {
+      bins row_low  = { [0:15] };
+      bins row_mid  = { [16:31] };
+      bins row_high = { [32:63] };
+    }
+    coverpoint item.col {
+      bins col_low  = { [0:10] };
+      bins col_mid  = { [11:20] };
+      bins col_high = { [21:31] };
+    }
+    coverpoint item.wr_data {
+      bins small = { [0:63] };
+      bins big   = { [64:255] };
+    }
+    // Cross
+    cross cmd, row;
+  endgroup
 
-function new (string name = "dram_cov", uvm_component parent);
-      super.new (name, parent);
-	  CovPort = new;
-endfunction
+  virtual dram_if vif;
 
-function void build_phase(uvm_phase phase);
-    super.build_phase(phase);
-	//pkt=dram_seq_item::type_id::create("pkt");
-    //CovPort = new("CovPort",this);
-endfunction
-	  
-virtual function void write (T t);
-	`uvm_info("SEQ","SEQUENCE TRANSACTIONS",UVM_NONE);
-	pkt = t;
-	CovPort.sample();
-endfunction
-  
-  function void report_phase(uvm_phase phase);
-    super.report_phase(phase);
-    $display("coverage = %.2f %%",CovPort.get_inst_coverage());
+  function new(string name="dram_cov", uvm_component parent);
+    super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if(!uvm_config_db#(virtual dram_if)::get(this, "", "vif", vif))
+      `uvm_fatal("COV", "No vif set for coverage");
+    cg = new();
+  endfunction
+
+  virtual function void write(dram_seq_item t);
+    item = t;
+    cg.sample();
+  endfunction
+
+  function void report_phase(uvm_phase phase);
+    super.report_phase(phase);
+    `uvm_info("COV", $sformatf("Overall coverage = %3.2f%%", cg.get_inst_coverage()), UVM_LOW);
+  endfunction
 endclass
